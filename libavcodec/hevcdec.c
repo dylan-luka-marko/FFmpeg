@@ -358,6 +358,15 @@ static void export_stream_params(HEVCContext *s, const HEVCSPS *sps)
             avctx->chroma_sample_location = AVCHROMA_LOC_LEFT;
     }
 
+=======
+            else
+                avctx->chroma_sample_location = AVCHROMA_LOC_UNSPECIFIED;
+        } else
+            avctx->chroma_sample_location = AVCHROMA_LOC_LEFT;
+    } else
+        avctx->chroma_sample_location = AVCHROMA_LOC_UNSPECIFIED;
+>>>>>>> ede2e4fea8... avcodec/hevc: export chroma sample location
+
     if (vps->vps_timing_info_present_flag) {
         num = vps->vps_num_units_in_tick;
         den = vps->vps_time_scale;
@@ -3648,3 +3657,11 @@ AVCodec ff_hevc_decoder = {
                                NULL
                            },
 };
+    avctx->chroma_sample_location = AVCHROMA_LOC_UNSPECIFIED;
+    if (sps->chroma_format_idc == 1) {
+        if (sps->vui.chroma_loc_info_present_flag) {
+            if (sps->vui.chroma_sample_loc_type_top_field <= 5)
+                avctx->chroma_sample_location = sps->vui.chroma_sample_loc_type_top_field + 1;
+        } else
+            avctx->chroma_sample_location = AVCHROMA_LOC_LEFT;
+    }
