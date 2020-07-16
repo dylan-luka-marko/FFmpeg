@@ -7359,7 +7359,7 @@ fi
 test -e Makefile || echo "include $source_path/Makefile" > Makefile
 
 esc(){
-    echo "$*" | sed 's/%/%25/g;s/:/%3a/g'
+    echo "$*" | sed 's/%/%25/g;s/:/%3a/g;s/\r//g'
 }
 
 echo "config:$arch:$subarch:$cpu:$target_os:$(esc $cc_ident):$(esc $FFMPEG_CONFIGURATION)" > ffbuild/config.fate
@@ -7389,7 +7389,7 @@ SRC_LINK=$source_link
 ifndef MAIN_MAKEFILE
 SRC_PATH:=\$(SRC_PATH:.%=..%)
 endif
-CC_IDENT=$cc_ident
+CC_IDENT=$(esc $cc_ident)
 ARCH=$arch
 INTRINSICS=$intrinsics
 EXTERN_PREFIX=$extern_prefix
@@ -7524,7 +7524,7 @@ cat > $TMPH <<EOF
 #define CONFIG_THIS_YEAR 2020
 #define FFMPEG_DATADIR "$(eval c_escape $datadir)"
 #define AVCONV_DATADIR "$(eval c_escape $datadir)"
-#define CC_IDENT "$(c_escape ${cc_ident:-Unknown compiler})"
+#define CC_IDENT "$(c_escape $(esc ${cc_ident:-Unknown compiler}))"
 #define av_restrict $restrict_keyword
 #define EXTERN_PREFIX "${extern_prefix}"
 #define EXTERN_ASM ${extern_prefix}
